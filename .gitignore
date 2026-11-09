@@ -1,0 +1,8 @@
+node_modules/
+dist/
+# Generated from the geopackage; holds settlement-level microplan data.
+data/
+# Password hashes and session secret.
+server/users.json
+server/.session-secret
+.DS_Store
