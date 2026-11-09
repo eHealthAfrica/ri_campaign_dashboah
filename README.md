@@ -5,10 +5,11 @@ visited, how much target population remains unvisited, and where the data source
 
 ## Run it
 
-Requires Node 22+ and Python 3 with `geopandas`, `pyogrio` and `shapely`.
+Requires Node 22+ and Python 3. The data scripts also need the source files in the parent folder: the MLoS, the RI facility list, the road network and the geopackage.
 
 ```bash
 npm install
+pip install -r requirements.txt
 python3 scripts/build_catchment.py        # facility catchments and session types
 npm run data -- ../Lagos_Unicef_ta.gpkg   # generate data/ from the geopackage
 npm run add-user -- yourname              # create a login (prompts for a password)
@@ -18,20 +19,30 @@ npm start                                 # http://localhost:8787
 
 Use `npm run dev` for development with hot reload, and `npm test` for the server tests.
 
-## Run with Docker
+## Deploy with Docker
 
 The image holds only the app. Settlement data and logins stay out of it, because this repository is public.
 
+On a machine that has `data/`, pack it:
+
 ```bash
-# Generate data/ first (see above), or copy it to the host from a trusted machine.
+./scripts/package-data.sh     # creates ri-data.tar.gz, which git ignores
+```
+
+Copy `ri-data.tar.gz` to the host over a private channel, then on the host:
+
+```bash
+git clone -b ri_dev https://github.com/eHealthAfrica/ri_campaign_dashboah.git
+cd ri_campaign_dashboah
+tar -xzf /path/to/ri-data.tar.gz          # creates ./data
+cp .env.example .env                      # optional settings
 docker compose up -d --build
-docker compose exec dashboard node scripts/add-user.mjs yourname   # http://localhost:8787
+docker compose exec dashboard node scripts/add-user.mjs yourname
 ```
 
 - **Data:** `./data` is mounted read-only. Without it the app starts, but the pages report that data could not be loaded.
-- **Logins:** accounts and the session secret live in the `ri_state` volume, so they survive rebuilds. Set `RI_SESSION_SECRET` to supply your own secret.
+- **Logins:** accounts and the session secret live in the `ri_state` volume, so they survive rebuilds. Passwords need at least 10 characters.
 - **HTTPS:** the container sets `NODE_ENV=production`, which makes the session cookie HTTPS-only. Host it behind HTTPS. Plain HTTP sign-in only works on `localhost`.
-- **Port:** set `RI_PORT` to publish a different host port.
 
 ## Look and language
 
