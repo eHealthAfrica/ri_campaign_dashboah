@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import { translate, type Lang } from "./i18n";
+import { LANGUAGES, translate, type Lang } from "./i18n";
 
 export const THEMES = [
   { id: "bright", name: "Bright", note: "Crisp white", swatch: "#FFFFFF", dark: false },
@@ -43,7 +43,7 @@ export function PrefsProvider({ children }: { children: ReactNode }) {
     const saved = load("ri-theme");
     return THEMES.find((x) => x.id === saved)?.id ?? "dark";
   });
-  const [lang, setLangState] = useState<Lang>(() => (["en", "ha", "yo", "ig"].includes(load("ri-lang") ?? "") ? (load("ri-lang") as Lang) : "en"));
+  const [lang, setLangState] = useState<Lang>(() => (LANGUAGES.some((l) => l.id === load("ri-lang")) ? (load("ri-lang") as Lang) : "en"));
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
   }, [theme]);

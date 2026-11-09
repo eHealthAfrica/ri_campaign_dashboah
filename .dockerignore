@@ -1,0 +1,9 @@
+.git
+node_modules
+dist
+data
+ri-data.tar.gz
+.env
+server/users.json
+server/.session-secret
+.DS_Store

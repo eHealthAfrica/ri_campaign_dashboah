@@ -8,7 +8,7 @@ const here = dirname(fileURLToPath(import.meta.url));
 
 function loadSecret() {
   if (process.env.RI_SESSION_SECRET) return process.env.RI_SESSION_SECRET;
-  const file = join(here, ".session-secret");
+  const file = process.env.RI_SESSION_SECRET_FILE ?? join(here, ".session-secret");
   if (!existsSync(file)) writeFileSync(file, randomBytes(32).toString("hex"), { mode: 0o600 });
   return readFileSync(file, "utf8");
 }
