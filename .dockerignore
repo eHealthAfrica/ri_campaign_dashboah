@@ -1,0 +1,7 @@
+.git
+node_modules
+dist
+data
+server/users.json
+server/.session-secret
+.DS_Store

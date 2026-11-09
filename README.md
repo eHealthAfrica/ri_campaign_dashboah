@@ -18,11 +18,26 @@ npm start                                 # http://localhost:8787
 
 Use `npm run dev` for development with hot reload, and `npm test` for the server tests.
 
+## Run with Docker
+
+The image holds only the app. Settlement data and logins stay out of it, because this repository is public.
+
+```bash
+# Generate data/ first (see above), or copy it to the host from a trusted machine.
+docker compose up -d --build
+docker compose exec dashboard node scripts/add-user.mjs yourname   # http://localhost:8787
+```
+
+- **Data:** `./data` is mounted read-only. Without it the app starts, but the pages report that data could not be loaded.
+- **Logins:** accounts and the session secret live in the `ri_state` volume, so they survive rebuilds. Set `RI_SESSION_SECRET` to supply your own secret.
+- **HTTPS:** the container sets `NODE_ENV=production`, which makes the session cookie HTTPS-only. Host it behind HTTPS. Plain HTTP sign-in only works on `localhost`.
+- **Port:** set `RI_PORT` to publish a different host port.
+
 ## Look and language
 
 The theme and language menus are in the top bar, and each browser remembers its choice. Themes are the
 token blocks at the top of `src/styles.css`, and the map switches between light and dark basemaps with them.
-Hausa, Yorùbá and Igbo text is in `src/i18n.ts`. It covers navigation, labels and headings; longer notes
+Hausa, Yorùbá, Igbo and Nigerian Pidgin text is in `src/i18n.ts`. It covers navigation, labels and headings; longer notes
 stay in English. It has not been reviewed by native speakers, so have that done before sharing it widely.
 
 ## Accounts
